@@ -1,0 +1,157 @@
+---
+- 
+  become: true
+  gather_facts: true
+  hosts: all
+  name: "Postgres"
+  vars_files:
+    - all
+  tasks: 
+    - 
+      debug: 
+        msg: "The hostname is {{ ansible_hostname }} and the OS is {{ ansible_version }}"
+      name: "Displaying System Information"
+    - 
+      name: "Installing Tools and Packages"
+      yum: 
+        name: 
+          - gcc
+          - net-tools
+          - vim
+          - bash-completion
+          - tmux
+          - tree
+          - htop
+          - wget
+          - unzip
+          - curl
+          - git
+    - 
+      name: "Setting timezone to {{ timezone }}"
+      timezone: 
+        name: "{{ timezone }}"
+    - 
+      blockinfile: 
+        block: |
+            {{ asterisk_ip }} {{ asterisk_host }} vagrant.asterisk
+            {{ webinterface_ip }} {{ webinterface_host }} vagrant.webinterface
+            {{ postgres_ip }} {{ postgres_host }} vagrant.postgres
+        create: true
+        path: /etc/hosts
+      name: "Setting Host File Configuration for Switchboard Cluster"
+    - name: Creating Export Directoring
+      file:
+        path: /data
+        state: directory
+        mode: '0755'
+        owner: asterisk
+        group: asterisk
+    - 
+      name: "Setting Exports"
+      copy: 
+        dest: /etc/exports
+        src: /vagrant/exports
+    - 
+      name: "Starting NFS"
+      service: 
+        enabled: true
+        name: nfs
+        state: started
+    - 
+      command: "yum clean all"
+      name: "Cleaning Yum Cache"
+    - name: Adding EPEL repository
+      yum:
+        name: epel-release
+        state: present
+    - 
+      ignore_errors: true
+      name: "Adding the user asterisk"
+      user: 
+        comment: Asterisk SIP User
+        shell: /bin/bash
+        name: asterisk
+        password: "{{ userpass | password_hash('sha512') }}"
+    - 
+      become: true
+      name: Creating Asterisk Base Directory
+      file:
+        path:  /usr/src/asterisk
+        owner: asterisk
+        group: asterisk
+        state: directory
+        mode: '0755'
+    - 
+      name: "Downloading Asterisk"
+      get_url: 
+        url: https://downloads.asterisk.org/pub/telephony/asterisk/asterisk-17-current.tar.gz
+        dest: /usr/src/asterisk/asterisk-17-current.tar.gz
+        timeout: 300
+    - 
+      name: "Unpacking Asterisk"
+      unarchive: 
+        copy: false
+        dest: /usr/src/
+        src: /usr/src/asterisk/asterisk-17-current.tar.gz
+    - 
+      args: 
+        chdir: /usr/src/asterisk-17.4.0/contrib/scripts/
+      name: "Preparing Asterisk Source for Compilation"
+      become: yes
+      shell: "sudo sh install_prereq install"
+    -
+      args:
+        chdir: /usr/src/asterisk-17.4.0/
+      name: "Configuring Asterisk Source for Compilation"
+      become: yes
+      shell: "sudo ./configure  --with-jansson-bundled"
+    - 
+      args: 
+        chdir: /usr/src/asterisk-17.4.0
+      name: "Compiling Asterisk Server from Source"
+      shell: "make && make install && make config && make install-logrotate"
+    -
+      name: Unzipping configuration folder
+      copy:
+        src: /vagrant/conf.zip
+        dest: /etc/asterisk/conf.zip
+    -
+      name: "Unpacking Asterisk"
+      unarchive:
+        copy: false
+        dest: /etc/asterisk
+        src: /etc/asterisk/conf.zip
+
+    - name: Setting Asterisk ACLs
+      file:
+        path: /var/lib/asterisk
+        state: directory
+        mode: '0755'
+        owner: asterisk
+        group: asterisk
+    - name: Setting Asterisk ACLs
+      file:
+        path: /var/lib/asterisk/moh/Prominic
+        state: directory
+        mode: '0755'
+        owner: asterisk
+        group: asterisk
+    - name: Setting Asterisk ACLs
+      file:
+        path: /var/log/asterisk
+        state: directory
+        mode: '0755'
+        owner: asterisk
+        group: asterisk
+    -
+      name: Copying moh Folder
+      copy:
+        src: /vagrant/moh
+        dest: /var/lib/asterisk/moh/
+    -
+      name: Setting SELinux Configuration
+      copy:
+        src: /vagrant/selinux_config
+        dest: /etc/selinux/config
+
+
