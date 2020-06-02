@@ -1,5 +1,5 @@
-# Guacamole Gateway
-Primary goal is to use Vagrant to deploy Guacamole on CentOS as a means to provide a HTML5 GUI for multiple Projects.
+# Asterisk for Switchboard
+Primary goal is to use Vagrant to deploy Asterisk for Switchboard on CentOS as a means to provide a Grails GUI for a Asterisk phone system.
 
 ## Getting Started
 
@@ -40,8 +40,8 @@ sudo yum install git
 Open up a terminal and perform the following git command:
 
 ```shell
-git clone https://github.com/Makr91/Vagrant-Guacamole-CentOS-8.1.git
-cd Vagrant-Guacamole-CentOS-8.1
+git clone https://github.com/MarkProminic/Asterisk.git
+cd Asterisk
 ```
 ### Starting Vagrant
 The installation process is estimated to take about 15 - 30 Minutes (mayber longer on older machines)
@@ -67,7 +67,7 @@ Please read [CONTRIBUTING.md](https://www.prominic.net) for details on our code 
 
 * **Mark Gilbert** - *Initial work* - [Makr91](https://github.com/Makr91)
 
-See also the list of [contributors](https://github.com/Makr91/Vagrant-Guacamole-CentOS-8.1/graphs/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/Makr91/Asterisk/graphs/contributors) who participated in this project.
 
 ## License
 
