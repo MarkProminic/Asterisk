@@ -57,7 +57,7 @@
       name: "Setting Exports"
       copy: 
         dest: /etc/exports
-        src: /vagrant/exports
+        src: /vagrant/asterisk/exports
     - 
       name: "Starting NFS"
       service: 
@@ -105,7 +105,7 @@
     -
       name: Unzipping configuration folder
       copy:
-        src: /vagrant/conf.zip
+        src: /vagrant/asterisk/conf.zip
         dest: /etc/asterisk/conf.zip
     -
       name: "Unpacking Asterisk"
@@ -138,12 +138,12 @@
     -
       name: Copying moh Folder
       copy:
-        src: /vagrant/moh
+        src: /vagrant/asterisk/moh
         dest: /var/lib/asterisk/moh/
     -
       name: Setting SELinux Configuration
       copy:
-        src: /vagrant/selinux_config
+        src: /vagrant/asterisk/selinux_config
         dest: /etc/selinux/config
 
 
