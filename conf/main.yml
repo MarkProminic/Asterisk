@@ -87,19 +87,19 @@
         src: /usr/src/asterisk/asterisk-17-current.tar.gz
     - 
       args: 
-        chdir: /usr/src/asterisk-17.4.0/contrib/scripts/
+        chdir: /usr/src/asterisk-17.8.0/contrib/scripts/
       name: "Preparing Asterisk Source for Compilation"
       become: yes
       shell: "sudo sh install_prereq install"
     -
       args:
-        chdir: /usr/src/asterisk-17.4.0/
+        chdir: /usr/src/asterisk-17.8.0/
       name: "Configuring Asterisk Source for Compilation"
       become: yes
       shell: "sudo ./configure  --with-jansson-bundled"
     - 
       args: 
-        chdir: /usr/src/asterisk-17.4.0
+        chdir: /usr/src/asterisk-17.8.0
       name: "Compiling Asterisk Server from Source"
       shell: "make && make install && make config && make install-logrotate"
     -
