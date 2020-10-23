@@ -30,15 +30,6 @@
       name: "Setting timezone to {{ timezone }}"
       timezone: 
         name: "{{ timezone }}"
-    - 
-      blockinfile: 
-        block: |
-            {{ asterisk_ip }} {{ asterisk_host }} vagrant.asterisk
-            {{ webinterface_ip }} {{ webinterface_host }} vagrant.webinterface
-            {{ postgres_ip }} {{ postgres_host }} vagrant.postgres
-        create: true
-        path: /etc/hosts
-      name: "Setting Host File Configuration for Switchboard Cluster"
     - name: Creating Export Directoring
       file:
         path: /data
