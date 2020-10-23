@@ -30,6 +30,22 @@
       name: "Setting timezone to {{ timezone }}"
       timezone: 
         name: "{{ timezone }}"
+
+    - 
+      command: "yum clean all"
+      name: "Cleaning Yum Cache"
+    - name: Adding EPEL repository
+      yum:
+        name: epel-release
+        state: present
+    - 
+      ignore_errors: true
+      name: "Adding the user asterisk"
+      user: 
+        comment: Asterisk SIP User
+        shell: /bin/bash
+        name: asterisk
+        password: "{{ userpass | password_hash('sha512') }}"
     - name: Creating Export Directoring
       file:
         path: /data
@@ -48,21 +64,6 @@
         enabled: true
         name: nfs
         state: started
-    - 
-      command: "yum clean all"
-      name: "Cleaning Yum Cache"
-    - name: Adding EPEL repository
-      yum:
-        name: epel-release
-        state: present
-    - 
-      ignore_errors: true
-      name: "Adding the user asterisk"
-      user: 
-        comment: Asterisk SIP User
-        shell: /bin/bash
-        name: asterisk
-        password: "{{ userpass | password_hash('sha512') }}"
     - 
       become: true
       name: Creating Asterisk Base Directory
