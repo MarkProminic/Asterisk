@@ -3,7 +3,7 @@
   become: true
   gather_facts: true
   hosts: all
-  name: "Postgres"
+  name: "Asterisk"
   vars_files:
     - all
   tasks: 
